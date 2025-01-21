@@ -13,10 +13,16 @@ from styles import CYBERPUNK_STYLE, COLORS
 from layout import StartupLayout, ChatLayout
 from db_utils import ChatDatabase
 import datetime
+from avatar_window import AvatarWindow
 
 class StartupWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        # Create global avatar window
+        if not hasattr(QApplication.instance(), 'avatar_window'):
+            QApplication.instance().avatar_window = AvatarWindow()
+            QApplication.instance().avatar_window.show()
+        
         self.db = ChatDatabase()
         self.setWindowTitle("DeepPhreak Main Menu")
         self.setStyleSheet(CYBERPUNK_STYLE)
@@ -81,6 +87,7 @@ class ChatWindow(QMainWindow):
         self.ollama_url = "http://127.0.0.1:11434/api/generate"
         self.user_color = QColor(COLORS['user'])
         self.bot_color = QColor(COLORS['bot'])
+        self.avatar_window = QApplication.instance().avatar_window
         
         # Setup layout
         self.ui = ChatLayout()
@@ -141,6 +148,7 @@ class ChatWindow(QMainWindow):
             self.ui.preview_area.clear()
             
             try:
+                self.avatar_window.set_thinking(True)  # Use floating avatar
                 # Get relevant context from past conversations
                 context = self.get_relevant_context(user_message)
                 
@@ -160,6 +168,7 @@ Please provide a response taking into account the context above if relevant."""
                     self.ui.preview_area.moveCursor(self.ui.preview_area.textCursor().End)
                     QApplication.processEvents()
                 
+                self.avatar_window.set_thinking(False)  # Return to idle
                 # Clean and add complete response to main chat
                 cleaned_response = self.clean_think_tags(accumulated_response)
                 self.log_message("Bot", cleaned_response)
@@ -170,6 +179,7 @@ Please provide a response taking into account the context above if relevant."""
                     self.ui.preview_area.setText("Bot's Thinking Process:\n\n" + thinking_content)
                 
             except Exception as e:
+                self.avatar_window.set_thinking(False)  # Return to idle on error
                 self.append_colored_text(f"Error: {str(e)}", QColor("red"))
 
     def stream_ollama(self, prompt):
@@ -203,6 +213,7 @@ if __name__ == "__main__":
         font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
         app.setFont(QFont(font_family, 10))
     
+    # Create and show windows
     window = StartupWindow()
     window.show()
     sys.exit(app.exec_())
