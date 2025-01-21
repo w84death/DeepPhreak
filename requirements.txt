@@ -1,0 +1,8 @@
+PyQt5
+ollama-python
+chromadb
+sentence-transformers
+transformers
+peft
+accelerate
+requests
