@@ -28,3 +28,9 @@ A PyQt5-based chatbot UI powered by a local Ollama server running DeepSeek-R1. C
    - Update embeddings and retrain or fine-tune model with user-specific knowledge.
 4. **Next Steps**:
    - Add user profile management, improved context handling, and advanced data visualization for chat statistics.
+
+## Screenshots
+
+![Screenshot Main Menu](screen1.png)
+
+![Screenshot Chat](screen2.png)
