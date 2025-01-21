@@ -20,6 +20,15 @@ class StartupLayout(QWidget):
         self.status_label = QLabel("Checking Ollama server status...")
         layout.addWidget(self.status_label)
         
+        # Add stats label
+        self.stats_label = QLabel()
+        self.stats_label.setAlignment(Qt.AlignCenter)
+        
+        # Add to layout (assuming you have a vertical layout)
+        self.layout().addWidget(self.stats_label)
+        # Add some spacing
+        self.layout().addSpacing(10)
+        
         # Buttons
         self.start_button = QPushButton("Start Chatting")
         self.start_button.setEnabled(False)
