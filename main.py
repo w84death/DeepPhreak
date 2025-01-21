@@ -15,7 +15,7 @@ from layout import StartupLayout, ChatLayout
 class StartupWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("DeepPhreak Startup")
+        self.setWindowTitle("DeepPhreak Main Menu")
         self.setStyleSheet(CYBERPUNK_STYLE)
         
         # Setup layout
