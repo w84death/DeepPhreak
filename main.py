@@ -16,6 +16,12 @@ import datetime
 from avatar_window import AvatarWindow
 from file_processor import FileProcessor
 
+MODEL_SIZES = {
+    "DeepSeek 1.5b": "deepseek-r1:1.5b",
+    "DeepSeek 7b": "deepseek-r:7b",
+    "DeepSeek 70b": "deepseek-r:70b"
+}
+
 class StartupWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -32,19 +38,26 @@ class StartupWindow(QMainWindow):
         self.ui = StartupLayout()
         self.setCentralWidget(self.ui)
         
-        # Connect signals
+        # Initialize model selection before other operations
+        self.selected_model = "DeepSeek 1.5b"  # Default model
+        self.ui.model_selector.setCurrentText(self.selected_model)
+        self.ui.model_selector.currentTextChanged.connect(self.on_model_change)
+        
+        # Connect other signals
         self.ui.start_button.clicked.connect(self.start_chat)
         self.ui.quit_button.clicked.connect(self.close)
         
         self.resize(700, 400)
         self.center_window()
         self.check_server()
-        self.update_stats()
         
         # Create timer to update stats periodically
         self.stats_timer = QTimer()
         self.stats_timer.timeout.connect(self.update_stats)
         self.stats_timer.start(5000)  # Update every 5 seconds
+        
+        # Initial stats update
+        self.update_stats()
 
     def center_window(self):
         frame = self.frameGeometry()
@@ -66,9 +79,14 @@ class StartupWindow(QMainWindow):
             self.ui.status_label.setStyleSheet("QLabel { color: #ff0000; }")
             QTimer.singleShot(2000, self.check_server)  # Retry after 2 seconds
 
+    def on_model_change(self, model_name):
+        self.selected_model = model_name
+        self.update_stats()
+
     def update_stats(self):
         stats = self.db.get_stats()
-        stats_text = f"Database: {stats['total_messages']} messages"
+        stats_text = f"Selected Model: {self.selected_model}\n"
+        stats_text += f"Database: {stats['total_messages']} messages"
         if stats['latest_entry']:
             stats_text += f"\nLast entry: {stats['latest_entry']}"
         else:
@@ -78,13 +96,14 @@ class StartupWindow(QMainWindow):
         self.ui.stats_label.setStyleSheet("QLabel { color: #00ff9f; font-size: 10pt; }")
 
     def start_chat(self):
-        self.chat_window = ChatWindow()
+        self.chat_window = ChatWindow(MODEL_SIZES[self.selected_model])
         self.chat_window.show()
         self.close()
 
 class ChatWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, model_name="deepseek-r1:1.5b"):
         super().__init__()
+        self.model_name = model_name
         self.ollama_url = "http://127.0.0.1:11434/api/generate"
         self.user_color = QColor(COLORS['user'])
         self.bot_color = QColor(COLORS['bot'])
@@ -216,7 +235,7 @@ Please provide a response taking into account the context and attached file cont
     def stream_ollama(self, prompt):
         try:
             payload = {
-                "model": "deepseek-r1:1.5b",
+                "model": self.model_name,
                 "prompt": prompt,
                 "stream": True
             }

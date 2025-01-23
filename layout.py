@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTextEdit, 
-                           QLineEdit, QPushButton, QSplitter, QLabel)
+                           QLineEdit, QPushButton, QSplitter, QLabel,
+                           QComboBox)
 from PyQt5.QtCore import Qt
 from styles import LOGO
 
@@ -15,6 +16,35 @@ class StartupLayout(QWidget):
         self.logo.setStyleSheet("QTextEdit { border: none; font-family: monospace; }")
         self.logo.setMaximumHeight(200)
         layout.addWidget(self.logo)
+        
+        # Model selector
+        model_layout = QHBoxLayout()
+        self.model_label = QLabel("Model Size:")
+        self.model_selector = QComboBox()
+        self.model_selector.addItems(["DeepSeek 1.5b", "DeepSeek 7b", "DeepSeek 70b"])
+        self.model_selector.setStyleSheet("""
+            QComboBox {
+                color: #00ff9f;
+                background-color: #1a1a1a;
+                border: 1px solid #00ff9f;
+                padding: 5px;
+            }
+            QComboBox::drop-down {
+                border: none;
+            }
+            QComboBox::down-arrow {
+                image: none;
+                border-left: 3px solid #00ff9f;
+                border-bottom: 3px solid #00ff9f;
+                width: 5px;
+                height: 5px;
+                transform: rotate(-45deg);
+                margin-right: 8px;
+            }
+        """)
+        model_layout.addWidget(self.model_label)
+        model_layout.addWidget(self.model_selector)
+        layout.addLayout(model_layout)
         
         # Status
         self.status_label = QLabel("Checking Ollama server status...")
