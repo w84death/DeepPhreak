@@ -14,7 +14,7 @@ class AvatarWidget(QTextEdit):
         self.frames = IDLE_FRAMES
         self.animation_timer = QTimer()
         self.animation_timer.timeout.connect(self.next_frame)
-        self.animation_timer.start(500)  # 500ms between frames
+        self.animation_timer.start(800)  # Slower animation for idle frames
         
         # Style
         self.setStyleSheet("""
@@ -40,3 +40,5 @@ class AvatarWidget(QTextEdit):
         self.frames = THINKING_FRAMES if is_thinking else IDLE_FRAMES
         self.current_frame = 0
         self.show_frame()
+        # Adjust animation speed based on state
+        self.animation_timer.setInterval(500 if is_thinking else 800)

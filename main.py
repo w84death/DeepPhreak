@@ -5,7 +5,7 @@ import sys
 import json
 import requests
 import re
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QFileDialog
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QTextCharFormat, QColor, QFont, QFontDatabase
 
@@ -14,6 +14,7 @@ from layout import StartupLayout, ChatLayout
 from db_utils import ChatDatabase
 import datetime
 from avatar_window import AvatarWindow
+from file_processor import FileProcessor
 
 class StartupWindow(QMainWindow):
     def __init__(self):
@@ -98,6 +99,10 @@ class ChatWindow(QMainWindow):
         self.ui.input_line.returnPressed.connect(self.handle_send)
         self.ui.send_button.clicked.connect(self.handle_send)
         
+        # Connect file attachment
+        self.ui.attach_button.clicked.connect(self.handle_attachment)
+        self.current_attachment = None
+        
         self.setWindowTitle("DeepPhreak")
         self.resize(1200, 800)
         self.ui.input_line.setFocus()
@@ -139,9 +144,32 @@ class ChatWindow(QMainWindow):
             return context
         return ""
 
+    def handle_attachment(self):
+        file_filter = "Documents (*.pdf *.txt *.docx *.xlsx *.csv)"
+        filepath, _ = QFileDialog.getOpenFileName(
+            self, "Attach File", "", file_filter
+        )
+        
+        if filepath:
+            self.current_attachment = filepath
+            filename = os.path.basename(filepath)
+            self.ui.attach_button.setText("📎 " + filename)
+            self.ui.attach_button.setToolTip(filepath)
+
     def handle_send(self):
         user_message = self.ui.input_line.text().strip()
-        if user_message:
+        
+        # Process attachment if present
+        attachment_content = ""
+        if self.current_attachment:
+            attachment_content = FileProcessor.process_file(self.current_attachment)
+            filename = os.path.basename(self.current_attachment)
+            self.log_message("System", f"File attached: {filename}")
+            self.current_attachment = None
+            self.ui.attach_button.setText("📎")
+            self.ui.attach_button.setToolTip("Attach file (PDF, TXT, DOCX, XLSX, CSV)")
+
+        if user_message or attachment_content:
             self.log_message("User", user_message)
             self.ui.input_line.clear()
             self.ui.input_line.setFocus()
@@ -152,13 +180,16 @@ class ChatWindow(QMainWindow):
                 # Get relevant context from past conversations
                 context = self.get_relevant_context(user_message)
                 
-                # Construct prompt with context
+                # Construct prompt with context and attachment
                 full_prompt = f"""Context from past conversations:
 {context}
 
+{"Attached file content:" if attachment_content else ""}
+{attachment_content}
+
 Current user message: {user_message}
 
-Please provide a response taking into account the context above if relevant."""
+Please provide a response taking into account the context and attached file content if relevant."""
 
                 accumulated_response = ""
                 for chunk in self.stream_ollama(full_prompt):

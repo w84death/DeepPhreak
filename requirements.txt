@@ -6,3 +6,8 @@ transformers
 peft
 accelerate
 requests
+
+PyPDF2>=3.0.0
+python-docx>=0.8.11
+pandas>=1.5.0
+openpyxl>=3.0.10

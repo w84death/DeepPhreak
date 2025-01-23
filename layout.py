@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QTextEdit, 
+from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTextEdit, 
                            QLineEdit, QPushButton, QSplitter, QLabel)
 from PyQt5.QtCore import Qt
 from styles import LOGO
@@ -69,9 +69,18 @@ class ChatLayout(QWidget):
         
         layout.addWidget(splitter)
 
-        # Input area
+        # Input area with file attachment
+        input_layout = QHBoxLayout()
+        
+        self.attach_button = QPushButton("📎")
+        self.attach_button.setMaximumWidth(40)
+        self.attach_button.setToolTip("Attach file (PDF, TXT, DOCX, XLSX, CSV)")
+        input_layout.addWidget(self.attach_button)
+        
         self.input_line = QLineEdit()
-        layout.addWidget(self.input_line)
-
+        input_layout.addWidget(self.input_line)
+        
         self.send_button = QPushButton("Send")
-        layout.addWidget(self.send_button)
+        input_layout.addWidget(self.send_button)
+        
+        layout.addLayout(input_layout)
