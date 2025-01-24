@@ -9,12 +9,12 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QFileDialog
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QTextCharFormat, QColor, QFont, QFontDatabase
 
-from styles import CYBERPUNK_STYLE, COLORS
-from layout import StartupLayout, ChatLayout
-from db_utils import ChatDatabase
+from src.styles import CYBERPUNK_STYLE, COLORS
+from src.layout import StartupLayout, ChatLayout
+from src.db_utils import ChatDatabase
 import datetime
-from avatar_window import AvatarWindow
-from file_processor import FileProcessor
+from src.avatar_window import AvatarWindow
+from src.file_processor import FileProcessor
 
 MODEL_SIZES = {
     "DeepSeek 1.5b": "deepseek-r1:1.5b",

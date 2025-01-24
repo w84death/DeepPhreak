@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtCore import Qt
-from avatar_widget import AvatarWidget
+from src.avatar_widget import AvatarWidget
 
 class AvatarWindow(QMainWindow):
     def __init__(self):

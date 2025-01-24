@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTextEdit,
                            QLineEdit, QPushButton, QSplitter, QLabel,
                            QComboBox)
 from PyQt5.QtCore import Qt
-from styles import LOGO
+from src.styles import LOGO
 
 class StartupLayout(QWidget):
     def __init__(self):
@@ -34,12 +34,14 @@ class StartupLayout(QWidget):
             }
             QComboBox::down-arrow {
                 image: none;
-                border-left: 3px solid #00ff9f;
-                border-bottom: 3px solid #00ff9f;
-                width: 5px;
-                height: 5px;
-                transform: rotate(-45deg);
+                width: 8px;
+                height: 8px;
+                background: none;
+                border-left: 2px solid #00ff9f;
+                border-bottom: 2px solid #00ff9f;
                 margin-right: 8px;
+                subcontrol-position: center right;
+                subcontrol-origin: padding;
             }
         """)
         model_layout.addWidget(self.model_label)

@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QTextEdit
 from PyQt5.QtCore import QTimer
-from ascii_frames import IDLE_FRAMES, THINKING_FRAMES
+from src.ascii_frames import IDLE_FRAMES, THINKING_FRAMES
 
 class AvatarWidget(QTextEdit):
     def __init__(self):
