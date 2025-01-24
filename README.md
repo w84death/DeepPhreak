@@ -29,9 +29,9 @@ A PyQt5-based chatbot UI powered by a local Ollama server running DeepSeek-R1. F
 
 ## Screenshots
 
-![Screenshot Main Menu](src/screen1.png)
+![Screenshot Main Menu](media/screen1.png)
 
-![Screenshot Chat](src/screen2.png)
+![Screenshot Chat](media/screen2.png)
 
 ## Requirements
 - Python 3.9+
